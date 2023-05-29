@@ -27,6 +27,10 @@ export interface Metrics {
   frame: Rect;
 }
 
+export interface WithSafeAreaInsetsProps {
+  insets: EdgeInsets;
+}
+
 export type InsetChangedEvent = NativeSyntheticEvent<Metrics>;
 
 export type InsetChangeNativeCallback = (event: InsetChangedEvent) => void;

@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { Dimensions, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import NativeSafeAreaProvider from './NativeSafeAreaProvider';
-import { EdgeInsets, InsetChangedEvent, Metrics, Rect } from './SafeArea.types';
+import {
+  EdgeInsets,
+  InsetChangedEvent,
+  Metrics,
+  Rect,
+  WithSafeAreaInsetsProps,
+} from './SafeArea.types';
 
 export const SafeAreaInsetsContext = React.createContext<EdgeInsets | null>(
   null,
@@ -121,14 +127,25 @@ export function useSafeAreaFrame(): Rect {
 }
 
 export function withSafeAreaInsets<T>(
-  WrappedComponent: React.ComponentType<T>,
-) {
-  return React.forwardRef((props: T, ref: React.Ref<T>) => (
-    <SafeAreaConsumer>
-      {(insets) => <WrappedComponent {...props} insets={insets} ref={ref} />}
-    </SafeAreaConsumer>
-  ));
+  WrappedComponent: React.ComponentType<T & WithSafeAreaInsetsProps>,
+): React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<T> & React.RefAttributes<unknown>
+> {
+  return React.forwardRef((props: T, ref: React.Ref<unknown>) => {
+    const insets = useSafeAreaInsets();
+    return <WrappedComponent {...props} insets={insets} ref={ref} />;
+  });
 }
+
+// export function withSafeAreaInsets<T>(
+//   WrappedComponent: React.ComponentType<T>,
+// ) {
+//   return React.forwardRef((props: T, ref: React.Ref<T>) => (
+//     <SafeAreaConsumer>
+//       {(insets) => <WrappedComponent {...props} insets={insets} ref={ref} />}
+//     </SafeAreaConsumer>
+//   ));
+// }
 
 /**
  * @deprecated
